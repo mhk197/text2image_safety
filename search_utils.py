@@ -4,10 +4,12 @@ import numpy as np
 import json
 import re, string
 from torchmetrics.multimodal import CLIPScore
+import open_clip
 
 torch_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-tokenizer = CLIPTokenizer.from_pretrained("openai/clip-vit-base-patch32")
-text_encoder = CLIPTextModel.from_pretrained("openai/clip-vit-base-patch32").to(torch_device)
+tokenizer = open_clip.get_tokenizer('ViT-B-32')
+text_encoder_, _, _ = open_clip.create_model_and_transforms('ViT-B-32', pretrained='laion2b_s34b_b79k')
+text_encoder = text_encoder_.to(torch_device)
 metric = CLIPScore(model_name_or_path="openai/clip-vit-base-patch32").to(torch_device)
 
 def load_data(path):
